@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion '24.0.2'
+
+    defaultConfig {
+        applicationId "com.example.rudz.jme_test"
+        minSdkVersion 21
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile files('libs/j-ogg-all-1.0.0.jar')
+    compile files('libs/jme3-android-native-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jme3-core-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jme3-effects-3.1.0-beta1.jar')
+    compile files('libs/jme3-jogg-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jme3-lwjgl-3.1.0-beta1.jar')
+    compile files('libs/jme3-plugins-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jme3-terrain-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jutils-1.0.0.jar')
+    compile files('libs/lwjgl-2.9.3.jar')
+    compile files('libs/lwjgl-platform-2.9.3-natives-linux.jar')
+    compile files('libs/lwjgl-platform-2.9.3-natives-osx.jar')
+    compile files('libs/jme3-bullet-native-android-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile files('libs/jme3-bullet-3.1.0-3.1-beta1_xbuf-SNAPSHOT-SNAPSHOT.jar')
+    compile project(':audio')
+    compile project(':base')
+    compile project(':common')
+    compile project(':commonwidget')
+    compile project(':controller')
+    compile project(':panowidget')
+    compile project(':videowidget')
+}

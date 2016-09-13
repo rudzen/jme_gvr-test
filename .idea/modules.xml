@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/audio/audio.iml" filepath="$PROJECT_DIR$/libraries/audio/audio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/base/base.iml" filepath="$PROJECT_DIR$/libraries/base/base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/common/common.iml" filepath="$PROJECT_DIR$/libraries/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/commonwidget/commonwidget.iml" filepath="$PROJECT_DIR$/libraries/commonwidget/commonwidget.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/controller/controller.iml" filepath="$PROJECT_DIR$/libraries/controller/controller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jme-test.iml" filepath="$PROJECT_DIR$/jme-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/panowidget/panowidget.iml" filepath="$PROJECT_DIR$/libraries/panowidget/panowidget.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/videowidget/videowidget.iml" filepath="$PROJECT_DIR$/libraries/videowidget/videowidget.iml" />
+    </modules>
+  </component>
+</project>
