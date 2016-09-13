@@ -14,16 +14,21 @@ public class Main extends MainAbstract {
 
     private ActionListener movementActionListener;
 
+    public Main() {
+        super();
+        this.setShowSettings(false);
+    }
+
     @Override
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
+        /*
         movementActionListener = new MovementListener();
-
-        buildPlayer();
-
         setupKeys(movementActionListener);
+        */
+        buildPlayer();
 
         //createTerrain();
         Terrain.createTerrain(assetManager, rootNode, cam, bulletAppState);
@@ -32,9 +37,11 @@ public class Main extends MainAbstract {
 
         rootNode.attachChild(loadSky());
 
+        /*
         audio.setDefaults(assetManager, audioRenderer);
         audio.nodes.get(audio.AMBIENCE).play();
         audio.nodes.get(audio.WAVES).play();
+        */
 
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
