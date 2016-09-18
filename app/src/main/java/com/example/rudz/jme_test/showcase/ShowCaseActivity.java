@@ -42,135 +42,137 @@ import javax.microedition.khronos.egl.EGLConfig;
  */
 public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.StereoRenderer {
 
-  private static final String TAG = "ShowCaseActivity";
+    private static final String TAG = "ShowCaseActivity";
 
-  private static final String SOUND_FILE = "Sounds/cube_sound.wav";
+    private static final String SOUND_FILE = "Sounds/cube_sound.wav";
 
-  private Vibrator vibrator;
+    private Vibrator vibrator;
 
-  private GvrAudioEngine gvrAudioEngine;
-  private volatile int soundId = GvrAudioEngine.INVALID_ID;
+    private GvrAudioEngine gvrAudioEngine;
+    private volatile int soundId = GvrAudioEngine.INVALID_ID;
 
-  public ShowCaseActivity() {
-    super();
-    //appClass = CardboardStarTravel.class.getCanonicalName();
-    //appClass = com.example.rudz.jme_test.showcase.Main.class.getCanonicalName();
-      appClass = "com.example.rudz.jme_test.showcase.ShowCase";
-  }
-
-  /**
-   * Checks if we've had an error inside of OpenGL ES, and if so what that error is.
-   *
-   * @param label Label to report in case of error.
-   */
-  private static void checkGLError(String label) {
-    int error;
-    while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-      Log.e(TAG, label + ": glError " + error);
-      throw new RuntimeException(label + ": glError " + error);
+    public ShowCaseActivity() {
+        super();
+        //appClass = CardboardStarTravel.class.getCanonicalName();
+        //appClass = com.example.rudz.jme_test.showcase.Main.class.getCanonicalName();
+        //appClass = "com.example.rudz.jme_test.showcase.ShowCase";
+        appClass = ShowCase.class.getCanonicalName();
     }
-  }
 
-  /**
-   * Sets the view to our GvrView and initializes the transformation matrices we will use
-   * to render our scene.
-   */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+    /**
+     * Checks if we've had an error inside of OpenGL ES, and if so what that error is.
+     *
+     * @param label
+     *         Label to report in case of error.
+     */
+    private static void checkGLError(String label) {
+        int error;
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            Log.e(TAG, label + ": glError " + error);
+            throw new RuntimeException(label + ": glError " + error);
+        }
+    }
 
-    initializeGvrView();
+    /**
+     * Sets the view to our GvrView and initializes the transformation matrices we will use
+     * to render our scene.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        initializeGvrView();
 
-    // Initialize 3D audio engine.
-    gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
-  }
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-  public void initializeGvrView() {
-    setContentView(R.layout.common_ui);
+        // Initialize 3D audio engine.
+        gvrAudioEngine = new GvrAudioEngine(this, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
+    }
 
-    GvrView gvrView = (GvrView) findViewById(R.id.gvr_view);
-    gvrView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
+    public void initializeGvrView() {
+        setContentView(R.layout.common_ui);
 
-    gvrView.setRenderer(this);
-    gvrView.setTransitionViewEnabled(true); // https://developers.google.com/vr/android/reference/com/google/vr/sdk/base/GvrView.html#public-methods_2
-    gvrView.setOnCardboardBackButtonListener(
-        new Runnable() {
-          @Override
-          public void run() {
-            onBackPressed();
-          }
-        });
-    setGvrView(gvrView);
-  }
+        GvrView gvrView = (GvrView) findViewById(R.id.gvr_view);
+        gvrView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
-  @Override
-  public void onPause() {
-    gvrAudioEngine.pause();
-    super.onPause();
-  }
+        gvrView.setRenderer(this);
+        gvrView.setTransitionViewEnabled(true); // https://developers.google.com/vr/android/reference/com/google/vr/sdk/base/GvrView.html#public-methods_2
+        gvrView.setOnCardboardBackButtonListener(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                });
+        setGvrView(gvrView);
+    }
 
-  @Override
-  public void onResume() {
-    super.onResume();
-    gvrAudioEngine.resume();
-  }
+    @Override
+    public void onPause() {
+        gvrAudioEngine.pause();
+        super.onPause();
+    }
 
-  @Override
-  public void onRendererShutdown() {
-    ctx.onRendererShutdown();
-    Log.i(TAG, "onRendererShutdown");
-  }
+    @Override
+    public void onResume() {
+        super.onResume();
+        gvrAudioEngine.resume();
+    }
 
-  @Override
-  public void onSurfaceChanged(int width, int height) {
-    ctx.onSurfaceChanged(width, height);
-    Log.i(TAG, "onSurfaceChanged");
-  }
+    @Override
+    public void onRendererShutdown() {
+        ctx.onRendererShutdown();
+        Log.i(TAG, "onRendererShutdown");
+    }
 
-  /**
-   * Creates the buffers we use to store information about the 3D world.
-   *
-   * <p>OpenGL doesn't use Java arrays, but rather needs data in a format it can understand.
-   * Hence we use ByteBuffers.
-   *
-   * @param config The EGL configuration used when creating the surface.
-   */
-  @Override
-  public void onSurfaceCreated(EGLConfig config) {
-    ctx.onSurfaceCreated(config);
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+        ctx.onSurfaceChanged(width, height);
+        Log.i(TAG, "onSurfaceChanged");
+    }
 
-    Log.i(TAG, "onSurfaceCreated");
-    GLES20.glClearColor(0.1f, 0.7f, 0.1f, 0.5f); // Dark background so text shows up well.
+    /**
+     * Creates the buffers we use to store information about the 3D world.
+     * <p/>
+     * <p>OpenGL doesn't use Java arrays, but rather needs data in a format it can understand.
+     * Hence we use ByteBuffers.
+     *
+     * @param config
+     *         The EGL configuration used when creating the surface.
+     */
+    @Override
+    public void onSurfaceCreated(EGLConfig config) {
+        ctx.onSurfaceCreated(config);
 
-    // Avoid any delays during start-up due to decoding of sound files.
-    new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
+        Log.i(TAG, "onSurfaceCreated");
+        GLES20.glClearColor(0.1f, 0.7f, 0.1f, 0.5f); // Dark background so text shows up well.
+
+        // Avoid any delays during start-up due to decoding of sound files.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 // Start spatial audio playback of SOUND_FILE at the model postion. The returned
                 //soundId handle is stored and allows for repositioning the sound object whenever
                 // the cube position changes.
                 gvrAudioEngine.preloadSoundFile(SOUND_FILE);
                 soundId = gvrAudioEngine.createSoundObject(SOUND_FILE);
-                gvrAudioEngine.setSoundObjectPosition(
-                    soundId, 0.1f, 2.0f, 0.0f);
-                gvrAudioEngine.playSound(soundId, true /* looped playback */);
-              }
-            })
-        .start();
+                gvrAudioEngine.setSoundObjectPosition(soundId, 0.1f, 2.0f, 0.0f);
+                gvrAudioEngine.playSound(soundId, true); // looped playback
+            }
+        })
+                .start();
 
-    checkGLError("onSurfaceCreated");
-  }
+        checkGLError("onSurfaceCreated");
+    }
 
-  /**
-   * Prepares OpenGL ES before we draw a frame.
-   *
-   * @param headTransform The head transformation in the new frame.
-   */
-  @Override
-  public void onNewFrame(HeadTransform headTransform) {
+    /**
+     * Prepares OpenGL ES before we draw a frame.
+     *
+     * @param headTransform
+     *         The head transformation in the new frame.
+     */
+    @Override
+    public void onNewFrame(HeadTransform headTransform) {
 
 
     /*
@@ -180,7 +182,7 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
     headTransform.getHeadView(headView, 0);
     */
 
-    // Update the 3d audio engine with the most recent head rotation.
+        // Update the 3d audio engine with the most recent head rotation.
     /* FIXME: Add jME AudioRenderer
     headTransform.getQuaternion(headRotation, 0);
     gvrAudioEngine.setHeadRotation(
@@ -192,34 +194,41 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
     checkGLError("gvrAudioEngine.update()");
     */
 
-    ctx.onNewFrame(headTransform);
-  }
+        /*
+        float[] headView = headTransform.getHeadView();
+        for (float f : headView) {
+            Log.d("HEADVIEW", Float.toString(f));
+        }
+        */
 
-  /**
-   * Draws a frame for an eye.
-   *
-   * @param eye The eye to render. Includes all required transformations.
-   */
-  @Override
-  public void onDrawEye(Eye eye) {
-    ctx.onDrawEye(eye);
+        ctx.onNewFrame(headTransform);
+    }
 
-    checkGLError("ctx.onDrawEye(eye)");
-  }
+    /**
+     * Draws a frame for an eye.
+     *
+     * @param eye
+     *         The eye to render. Includes all required transformations.
+     */
+    @Override
+    public void onDrawEye(Eye eye) {
+        ctx.onDrawEye(eye);
+        checkGLError("ctx.onDrawEye(eye)");
+    }
 
-  @Override
-  public void onFinishFrame(Viewport viewport) {
-    ctx.onFinishFrame(viewport);
-  }
+    @Override
+    public void onFinishFrame(Viewport viewport) {
+        ctx.onFinishFrame(viewport);
+    }
 
-  /**
-   * Called when the Cardboard trigger is pulled.
-   */
-  @Override
-  public void onCardboardTrigger() {
-    Log.i(TAG, "onCardboardTrigger");
+    /**
+     * Called when the Cardboard trigger is pulled.
+     */
+    @Override
+    public void onCardboardTrigger() {
+        Log.i(TAG, "onCardboardTrigger");
 
-    // Always give user feedback.
-    vibrator.vibrate(50);
-  }
+        // Always give user feedback.
+        vibrator.vibrate(50);
+    }
 }

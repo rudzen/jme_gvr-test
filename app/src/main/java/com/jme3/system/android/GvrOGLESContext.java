@@ -250,8 +250,8 @@ public class GvrOGLESContext implements JmeContext, GvrView.StereoRenderer, Soft
         throw new RuntimeException("FIXME: we cannot do a dialog right now");
     }
 
-    private float[] headRotation = new float[4];
-    private Quaternion orientation = new Quaternion();
+    private final float[] headRotation = new float[4];
+    private final Quaternion orientation = new Quaternion();
 
     @Override
     public void onNewFrame(HeadTransform headTransform) {
@@ -266,7 +266,7 @@ public class GvrOGLESContext implements JmeContext, GvrView.StereoRenderer, Soft
     }
 
     float[] perspective = new float[16];
-    private Matrix4f projMatrix = new Matrix4f();
+    private final Matrix4f projMatrix = new Matrix4f();
     // SystemListener:update
     @Override
     public void onDrawEye(Eye eye) {
@@ -295,7 +295,6 @@ public class GvrOGLESContext implements JmeContext, GvrView.StereoRenderer, Soft
             }
 
         }
-
 
         if (needClose.get()) {
             deinitInThread();

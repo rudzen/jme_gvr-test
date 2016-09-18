@@ -8,7 +8,6 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
 
 /**
- *
  * @author emanuel
  */
 public class JmeAndroidGvrSystem extends JmeAndroidSystem {
@@ -29,5 +28,4 @@ public class JmeAndroidGvrSystem extends JmeAndroidSystem {
         ctx.setSettings(settings);
         return ctx;
     }
-
 }

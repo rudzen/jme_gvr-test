@@ -1,6 +1,8 @@
 package com.example.rudz.jme_test.showcase.data.cars;
 
 
+import android.util.Log;
+
 import com.example.rudz.jme_test.showcase.Utility;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
@@ -25,6 +27,9 @@ public abstract class Car {
     public enum CarType {
         FERRARI
     }
+
+    private static final String TAG = "CarObject";
+    private static final String KEY = "Car";
 
     protected float acceleration;
     protected float brakeForce;
@@ -70,12 +75,13 @@ public abstract class Car {
 
     public void loadCar(AssetManager assetManager) {
         if (isLoaded.get()) {
+            Log.d(TAG, "Car is already loaded..");
             return;
         }
         carNode = (Node) assetManager.loadModel(modelPath);
         carNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        geomObject = Utility.findGeom(carNode, "Car");
-        BoundingBox box = (BoundingBox) geomObject.getModelBound();
+        geomObject = Utility.findGeom(carNode, KEY);
+        //BoundingBox box = (BoundingBox) geomObject.getModelBound();
         collisionShape = CollisionShapeFactory.createDynamicMeshShape(geomObject);
         configurePlayer();
         loadWheels();
@@ -83,9 +89,10 @@ public abstract class Car {
     }
 
     public void updateCollision() {
-        geomObject = Utility.findGeom(carNode, "Car");
+        geomObject = Utility.findGeom(carNode, KEY);
         collisionShape = CollisionShapeFactory.createDynamicMeshShape(geomObject);
         player.setCollisionShape(collisionShape);
+        Log.d(TAG, "Collision updated...");
     }
 
     private void configurePlayer() {
@@ -95,7 +102,7 @@ public abstract class Car {
         player.setSuspensionStiffness(stiffness);
         player.setMaxSuspensionForce(10000);
         carNode.addControl(player);
-
+        Log.d(TAG, "Player object configured..");
     }
 
     private void loadWheels() {
@@ -124,6 +131,7 @@ public abstract class Car {
 
         player.getWheel(2).setFrictionSlip(6);
         player.getWheel(3).setFrictionSlip(6);
+        Log.d(TAG, "Wheels loaded and configured..");
     }
 
     public Node getCarNode() {

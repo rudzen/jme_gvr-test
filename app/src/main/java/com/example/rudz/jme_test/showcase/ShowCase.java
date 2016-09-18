@@ -3,6 +3,7 @@ package com.example.rudz.jme_test.showcase;
 
 import com.example.rudz.jme_test.showcase.data.cars.Car;
 import com.example.rudz.jme_test.showcase.data.cars.Ferrari;
+import com.example.rudz.jme_test.stardust.StarDust;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -10,82 +11,138 @@ import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.light.DirectionalLight;
+import com.jme3.light.SpotLight;
+import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.scene.shape.Box;
 import com.jme3.util.SkyFactory;
 
-import java.util.HashMap;
-
 /**
- *
  * @author rudz
  */
-public abstract class ShowCase extends SimpleApplication {
+public class ShowCase extends SimpleApplication {
+
+    private static final String TAG = "ShowCase";
 
     // constants for some stuff.
     private static final String ICON = "assets/Interface/icon.png";
     private static final String SPLASH = "assets/Interface/Splash-small.png";
     private ActionListener movementActionListener;
 
-    protected BulletAppState bulletAppState;
+    private BulletAppState bulletAppState;
     // constants
-    protected final String LEFTS = "Lefts";
-    protected final String RIGHTS = "Rights";
-    protected final String UPS = "Ups";
-    protected final String DOWNS = "Downs";
-    protected final String SPACE = "Space";
-    protected final String RESET = "Reset";
-    // terrain stuff
-    protected TerrainQuad terrain;
-    // geometry map
-    protected HashMap<String, Geometry> geomMap;
+    private final String LEFTS = "Lefts";
+    private final String RIGHTS = "Rights";
+    private final String UPS = "Ups";
+    private final String DOWNS = "Downs";
+    private final String SPACE = "Space";
+    private final String RESET = "Reset";
     // player stuff
-    protected float steeringValue = 0f;
-    protected float accelerationValue = 0f;
-    Node carNode;
+    private float steeringValue = 0f;
+    private float accelerationValue = 0f;
+
+    private Camera cam;
     private ChaseCamera chaseCam;
+    private Spatial skyBox;
 
-    protected Audio audio;
+    private Audio audio;
 
-    protected Car car;
+    private Car car;
 
+    private Node stars;
+    private SpotLight light;
+    private Material mat;
+    private Node observer;
+    private float maxDistance = 75f;
+
+
+    private StarDust sd;
 
     public ShowCase() {
         super();
         this.setShowSettings(false);
     }
 
+    private void preInit() {
+        cam = getCamera();
+    }
+
+
     @Override
     public void simpleInitApp() {
+        preInit();
+
         //audio = new Audio();
-        geomMap = new HashMap<>();
-        bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
+        //bulletAppState = new BulletAppState();
+        //stateManager.attach(bulletAppState);
 
-        /*
-        movementActionListener = new MovementListener();
-        setupKeys(movementActionListener);
-        */
-        buildPlayer();
+        // CAR
 
-        //createTerrain();
-        Terrain.createTerrain(assetManager, rootNode, cam, bulletAppState);
+        //buildPlayer();
+        //movementActionListener = new MovementListener();
+        //setupKeys(movementActionListener);
 
-        configureCamera();
+        // Terrain
+        //Terrain.createTerrain(assetManager, rootNode, cam, bulletAppState);
 
-        rootNode.attachChild(loadSky());
 
+        //configureCamera();
+
+        // audio disabled, as cardboard can play it very natively!...
         /*
         audio.setDefaults(assetManager, audioRenderer);
         audio.nodes.get(audio.AMBIENCE).play();
         audio.nodes.get(audio.WAVES).play();
         */
 
+        // JME start travel stuff
+
+        /*
+        // Load the skybox spatial
+        skyBox = loadSky();
+
+        // rotate the damn thing, no idea why its on it's head :(
+        skyBox.rotate(FastMath.PI, 0f, 0.0f);
+
+        // attack the bastard..
+        rootNode.attachChild(skyBox);
+        */
+
+        sd = new StarDust("StarDust", 1000, 700f, cam, assetManager);
+        sd.addControl(sd);
+        rootNode.attachChild(sd);
+
+
+        /*
+
+        //Box b = new Box(1, 1, 1);
+        //Geometry geom = new Geometry("Box", b);
+        mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        mat.setColor("Diffuse", ColorRGBA.White);
+        //geom.setMaterial(mat);
+        //rootNode.attachChild(geom);
+
+        observer = new Node("");
+        rootNode.attachChild(observer);
+
+        stars = new Node();
+        rootNode.attachChild(stars);
+        initStars();
+
+        light = new SpotLight();
+        light.setSpotOuterAngle(FastMath.QUARTER_PI);
+        stars.addLight(light);
+
+        // end JME star travel stuff
+        */
+
+        /*
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
         rootNode.addLight(dl);
@@ -93,19 +150,45 @@ public abstract class ShowCase extends SimpleApplication {
         dl = new DirectionalLight();
         dl.setDirection(new Vector3f(0.5f, -0.1f, 0.3f).normalizeLocal());
         rootNode.addLight(dl);
+        */
     }
 
     @Override
     public void update() {
         super.update();
+        /*
         car.getPlayer().steer(car.getTurn() / 10);
         car.getPlayer().accelerate(-800f);
+        */
+    }
+
+    @Override
+    public void simpleUpdate(final float tpf) {
+        super.simpleUpdate(tpf);
+        sd.update(tpf);
+        if (car != null) {
+            car.getPlayer().steer(car.getTurn() / 10);
+            car.getPlayer().accelerate(-800f);
+        }
+
+        // startravel test
+        /*
+        List<Spatial> starList = stars.getChildren();
+
+        for (Spatial s : starList) {
+            s.move(0, 0, -.4f);
+            if (s.getWorldTranslation().z < -maxDistance) {
+                s.setLocalTranslation(FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * 100 - 50, maxDistance);
+            }
+        }
+        light.setDirection(cam.getDirection());
+        */
     }
 
     protected void configureCamera() {
         //cam.setLocation(player.getPhysicsLocation().mult(20f));
         cam.setFrustumFar(1000);
-        chaseCam = new ChaseCamera(cam, car != null ? car.getCarNode() : carNode);
+        chaseCam = new ChaseCamera(cam, car.getCarNode());
         chaseCam.setSmoothMotion(true);
         chaseCam.setChasingSensitivity(1f);
         chaseCam.setLookAtOffset(new Vector3f(0.0f, 0.0f, 10.0f));
@@ -143,11 +226,10 @@ public abstract class ShowCase extends SimpleApplication {
                 assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_north.jpg"),
                 assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_south.jpg"),
                 assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_up.jpg"),
-                assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_down.jpg"));
+                assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_down.jpg"), new Vector3f(0f, 0f, 0f), 1f);
     }
 
     protected void buildPlayer() {
-        //car = new Ferrari();
         float stiffness = 120.0f;//200=f1 car
         float compValue = 0.2f; //(lower than damp!)
         float dampValue = 0.3f;
@@ -155,9 +237,9 @@ public abstract class ShowCase extends SimpleApplication {
 
         car = new Ferrari(800f, 50f, .5f, mass, stiffness, compValue, dampValue);
         car.loadCar(assetManager);
-        rootNode.attachChild(car.getCarNode());
         bulletAppState.getPhysicsSpace().add(car.getPlayer());
         car.updateCollision();
+        rootNode.attachChild(car.getCarNode());
     }
 
     private class MovementListener implements ActionListener {
@@ -215,6 +297,18 @@ public abstract class ShowCase extends SimpleApplication {
                     car.getPlayer().brake(isPressed ? car.getBrakeForce() : 0f);
                     break;
             }
+        }
+    }
+
+    private void initStars() {
+        Geometry star;
+        Box starBox = new Box(1, 1, 1);
+        for (int i = 0; i < 100; i++) {
+            star = new Geometry("Star" + Integer.toString(i), starBox.clone());
+            star.setMaterial(mat);
+            star.rotate(FastMath.nextRandomFloat() * FastMath.TWO_PI, FastMath.nextRandomFloat() * FastMath.TWO_PI, FastMath.nextRandomFloat() * FastMath.TWO_PI);
+            star.setLocalTranslation(FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * maxDistance * 2 - maxDistance);
+            stars.attachChild(star);
         }
     }
 }

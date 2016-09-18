@@ -28,7 +28,7 @@ public class CardboardStarTravel extends SimpleApplication {
     private Node stars;
     private SpotLight light;
     
-    private float maxDistance = 75f;
+    private final float maxDistance = 75f;
 
     public CardboardStarTravel()
     {

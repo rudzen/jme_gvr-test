@@ -84,14 +84,13 @@ public class AndroidGvrHarness extends GvrActivity implements TouchListener, Dia
 
     /**
      * Sets the type of Audio Renderer to be used.
-     * <p>
+     * <p/>
      * Android MediaPlayer / SoundPool can be used on all
      * supported Android platform versions (2.2+)<br>
      * OpenAL Soft uses an OpenSL backend and is only supported on Android
      * versions 2.3+.
-     * <p>
+     * <p/>
      * Only use ANDROID_ static strings found in AppSettings
-     *
      */
     protected String audioRendererType = AppSettings.ANDROID_OPENAL_SOFT;
 
@@ -215,7 +214,6 @@ public class AndroidGvrHarness extends GvrActivity implements TouchListener, Dia
             }
             Log.i("AndroidGvrHArnes", "The app (" + appClass + ") is made");
         }
-
 
         ctx = (GvrOGLESContext) app.getContext();
         // store the glSurfaceView in JmeAndroidSystem for future use

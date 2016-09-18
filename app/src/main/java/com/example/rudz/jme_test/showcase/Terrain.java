@@ -4,9 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
@@ -18,13 +16,13 @@ import com.jme3.texture.Texture;
 
 public class Terrain {
 
-    private static float dirtScale = 16;
-    private static float darkRockScale = 32;
-    private static float pinkRockScale = 32;
-    private static float riverRockScale = 80;
-    private static float grassScale = 32;
-    private static float brickScale = 128;
-    private static float roadScale = 200;
+    private static final float dirtScale = 16.0f;
+    private static final float darkRockScale = 32.0f;
+    private static final float pinkRockScale = 32.0f;
+    private static final float riverRockScale = 80.0f;
+    private static final float grassScale = 32.0f;
+    private static final float brickScale = 128.0f;
+    private static final float roadScale = 200.0f;
 
     public static void createTerrain(AssetManager assetManager, Node rootNode, Camera camera, BulletAppState bulletAppState) {
         // TERRAIN TEXTURE material
@@ -138,7 +136,7 @@ public class Terrain {
         //terrain.setModelBound(new BoundingBox());
         terrain.updateModelBound();
         terrain.setLocalTranslation(50f, -180f, 0f);
-        terrain.setLocalScale(10f, 5f, 10f);
+        terrain.setLocalScale(2f, 1f, 2f);
         terrain.addControl(new RigidBodyControl(0f));
         bulletAppState.getPhysicsSpace().add(terrain);
         rootNode.attachChild(terrain);
@@ -146,9 +144,11 @@ public class Terrain {
         //Material debugMat = assetManager.loadMaterial("Common/Materials/VertexColor.j3m");
         //terrain.generateDebugTangents(debugMat);
 
+        /*
         DirectionalLight light = new DirectionalLight();
         light.setDirection((new Vector3f(-0.1f, -0.1f, -0.1f)).normalize());
         rootNode.addLight(light);
+        */
     }
 
 }
