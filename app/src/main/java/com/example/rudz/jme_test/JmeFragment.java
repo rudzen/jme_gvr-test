@@ -9,7 +9,7 @@ public class JmeFragment extends AndroidHarnessFragment {
 
     public JmeFragment() {
         // Set main project class (fully qualified path)
-        appClass = "com.example.rudz.jme_test.showcase.Main";
+        appClass = "com.example.rudz.jme_test.showcase.ShowCase";
 
         // Set the desired EGL configuration
         eglBitsPerPixel = 24;

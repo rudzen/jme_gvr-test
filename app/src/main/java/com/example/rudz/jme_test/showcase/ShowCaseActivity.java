@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.rudz.jme_test.startravel;
+package com.example.rudz.jme_test.showcase;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -40,9 +40,9 @@ import javax.microedition.khronos.egl.EGLConfig;
  * While gold, the user can activate the Carboard trigger, which will in turn
  * randomly reposition the cube.
  */
-public class StarTravelActivity extends AndroidGvrHarness implements GvrView.StereoRenderer {
+public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.StereoRenderer {
 
-  private static final String TAG = "StarTravelActivity";
+  private static final String TAG = "ShowCaseActivity";
 
   private static final String SOUND_FILE = "Sounds/cube_sound.wav";
 
@@ -51,7 +51,7 @@ public class StarTravelActivity extends AndroidGvrHarness implements GvrView.Ste
   private GvrAudioEngine gvrAudioEngine;
   private volatile int soundId = GvrAudioEngine.INVALID_ID;
 
-  public StarTravelActivity() {
+  public ShowCaseActivity() {
     super();
     //appClass = CardboardStarTravel.class.getCanonicalName();
     //appClass = com.example.rudz.jme_test.showcase.Main.class.getCanonicalName();

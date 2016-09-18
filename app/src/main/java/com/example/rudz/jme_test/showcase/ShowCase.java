@@ -5,10 +5,13 @@ import com.example.rudz.jme_test.showcase.data.cars.Car;
 import com.example.rudz.jme_test.showcase.data.cars.Ferrari;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -22,7 +25,12 @@ import java.util.HashMap;
  *
  * @author rudz
  */
-public abstract class MainAbstract extends SimpleApplication {
+public abstract class ShowCase extends SimpleApplication {
+
+    // constants for some stuff.
+    private static final String ICON = "assets/Interface/icon.png";
+    private static final String SPLASH = "assets/Interface/Splash-small.png";
+    private ActionListener movementActionListener;
 
     protected BulletAppState bulletAppState;
     // constants
@@ -46,14 +54,53 @@ public abstract class MainAbstract extends SimpleApplication {
 
     protected Car car;
 
-    protected MainAbstract() {
-        audio = new Audio();
-        geomMap = new HashMap<>();
+
+    public ShowCase() {
+        super();
+        this.setShowSettings(false);
     }
 
     @Override
-    public abstract void simpleInitApp();
+    public void simpleInitApp() {
+        //audio = new Audio();
+        geomMap = new HashMap<>();
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
 
+        /*
+        movementActionListener = new MovementListener();
+        setupKeys(movementActionListener);
+        */
+        buildPlayer();
+
+        //createTerrain();
+        Terrain.createTerrain(assetManager, rootNode, cam, bulletAppState);
+
+        configureCamera();
+
+        rootNode.attachChild(loadSky());
+
+        /*
+        audio.setDefaults(assetManager, audioRenderer);
+        audio.nodes.get(audio.AMBIENCE).play();
+        audio.nodes.get(audio.WAVES).play();
+        */
+
+        DirectionalLight dl = new DirectionalLight();
+        dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
+        rootNode.addLight(dl);
+
+        dl = new DirectionalLight();
+        dl.setDirection(new Vector3f(0.5f, -0.1f, 0.3f).normalizeLocal());
+        rootNode.addLight(dl);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        car.getPlayer().steer(car.getTurn() / 10);
+        car.getPlayer().accelerate(-800f);
+    }
 
     protected void configureCamera() {
         //cam.setLocation(player.getPhysicsLocation().mult(20f));
@@ -113,4 +160,61 @@ public abstract class MainAbstract extends SimpleApplication {
         car.updateCollision();
     }
 
+    private class MovementListener implements ActionListener {
+
+        public MovementListener() {
+        }
+
+        @Override
+        public void onAction(String binding, boolean isPressed, float tpf) {
+            switch (binding) {
+                case LEFTS:
+                    if (isPressed) {
+                        steeringValue += car.getTurn();
+                    } else {
+                        steeringValue -= car.getTurn();
+                    }
+                    car.getPlayer().steer(steeringValue);
+                    break;
+                case RIGHTS:
+                    if (isPressed) {
+                        steeringValue -= car.getTurn();
+                    } else {
+                        steeringValue += car.getTurn();
+                    }
+                    car.getPlayer().steer(steeringValue);
+                    break;
+                case UPS:
+                    if (isPressed) {
+                        accelerationValue -= car.getAcceleration();
+                    } else {
+                        accelerationValue += car.getAcceleration();
+                    }
+                    car.getPlayer().accelerate(accelerationValue);
+                    car.getPlayer().setCollisionShape(CollisionShapeFactory.createDynamicMeshShape(car.getCarGeometry()));
+                    break;
+                case DOWNS:
+                    if (isPressed) {
+                        accelerationValue += car.getAcceleration();
+                    } else {
+                        accelerationValue -= car.getAcceleration();
+                    }
+                    car.getPlayer().accelerate(accelerationValue);
+                    car.getPlayer().setCollisionShape(CollisionShapeFactory.createDynamicMeshShape(car.getCarGeometry()));
+                    break;
+                case RESET:
+                    if (isPressed) {
+                        car.getPlayer().setPhysicsLocation(new Vector3f(-50f, -25f, 10f));
+                        car.getPlayer().setPhysicsRotation(new Matrix3f());
+                        car.getPlayer().setLinearVelocity(Vector3f.ZERO);
+                        car.getPlayer().setAngularVelocity(Vector3f.ZERO);
+                        car.getPlayer().resetSuspension();
+                    }
+                    break;
+                case SPACE:
+                    car.getPlayer().brake(isPressed ? car.getBrakeForce() : 0f);
+                    break;
+            }
+        }
+    }
 }
