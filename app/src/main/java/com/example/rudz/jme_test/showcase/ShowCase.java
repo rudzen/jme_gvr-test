@@ -71,6 +71,7 @@ public class ShowCase extends SimpleApplication {
 
     private void preInit() {
         cam = getCamera();
+        audio = new Audio();
     }
 
 
@@ -78,7 +79,6 @@ public class ShowCase extends SimpleApplication {
     public void simpleInitApp() {
         preInit();
 
-        //audio = new Audio();
         //bulletAppState = new BulletAppState();
         //stateManager.attach(bulletAppState);
 
@@ -94,11 +94,9 @@ public class ShowCase extends SimpleApplication {
 
         //configureCamera();
 
-        // audio disabled, as cardboard can play it very natively!...
         /*
         audio.setDefaults(assetManager, audioRenderer);
-        audio.nodes.get(audio.AMBIENCE).play();
-        audio.nodes.get(audio.WAVES).play();
+        audio.nodes.get(audio.MUSIC).play();
         */
 
         // JME start travel stuff
@@ -114,10 +112,9 @@ public class ShowCase extends SimpleApplication {
         rootNode.attachChild(skyBox);
         */
 
-        sd = new StarDust("StarDust", 1000, 700f, cam, assetManager);
+        sd = new StarDust("StarDust", 200, 700f, cam, assetManager);
         sd.addControl(sd);
         rootNode.attachChild(sd);
-
 
         /*
 

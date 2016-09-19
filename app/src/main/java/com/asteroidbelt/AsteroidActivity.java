@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.rudz.jme_test.showcase;
+package com.asteroidbelt;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -40,25 +40,23 @@ import javax.microedition.khronos.egl.EGLConfig;
  * While gold, the user can activate the Carboard trigger, which will in turn
  * randomly reposition the cube.
  */
-public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.StereoRenderer {
+public class AsteroidActivity extends AndroidGvrHarness implements GvrView.StereoRenderer {
 
-    private static final String TAG = "ShowCaseActivity";
+    private static final String TAG = "AsteroidActivity";
 
-    private static final String SOUND_FILE = "Sounds/Loops/Space Fighter Loop.ogg";
-    //private static final String SOUND_FILE = "Sounds/cube_sound.wav";
+    private static final String SOUND_FILE = "Sounds/cube_sound.wav";
 
     private Vibrator vibrator;
 
     private GvrAudioEngine gvrAudioEngine;
     private volatile int soundId = GvrAudioEngine.INVALID_ID;
 
-    public ShowCaseActivity() {
+    public AsteroidActivity() {
         super();
         //appClass = CardboardStarTravel.class.getCanonicalName();
         //appClass = com.example.rudz.jme_test.showcase.Main.class.getCanonicalName();
         //appClass = "com.example.rudz.jme_test.showcase.ShowCase";
-        appClass = ShowCase.class.getCanonicalName();
-
+        appClass = AsteroidsAppState.class.getCanonicalName();
     }
 
     /**
@@ -163,6 +161,7 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
             }
         })
                 .start();
+
         checkGLError("onSurfaceCreated");
     }
 

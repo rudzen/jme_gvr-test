@@ -16,6 +16,7 @@ public class Audio {
     public byte AMBIENCE = 0;
     public byte WAVES = 1;
     public byte ENGINE = 2;
+    public byte MUSIC = 3;
     public Environment environment;
     private final float[] def_eax = new float[]{
             15, 38.0f, 0.300f, -1000, -3300, 0,
@@ -39,6 +40,7 @@ public class Audio {
         nodes.put(AMBIENCE, new AudioNode(assetManager, "Sounds/Environment/Nature.ogg", true));
         nodes.put(WAVES, new AudioNode(assetManager, "Sounds/Environment/Ocean Waves.ogg", true));
         nodes.put(ENGINE, new AudioNode(assetManager, "Sounds/Effects/Gun.wav", false));
+        nodes.put(MUSIC, new AudioNode(assetManager, "Sounds/Loops/Space Fighter Loop.ogg", true));
 
         nodes.get(WAVES).setPositional(true);
         nodes.get(WAVES).setLocalTranslation(new Vector3f(0, 0, 0));
@@ -53,6 +55,12 @@ public class Audio {
         nodes.get(ENGINE).setPitch(2f);
         nodes.get(ENGINE).setVolume(7);
         nodes.get(ENGINE).setLooping(true);
+
+        nodes.get(MUSIC).setPositional(true);
+        nodes.get(MUSIC).setLocalTranslation(new Vector3f(0, 0, 0));
+        nodes.get(MUSIC).setMaxDistance(100);
+        nodes.get(MUSIC).setRefDistance(5);
+        nodes.get(MUSIC).setVolume(3);
 
         //engine.setVelocity(new Vector3f(144.0f, 144.0f, 144.0f));
         //engine.play();
