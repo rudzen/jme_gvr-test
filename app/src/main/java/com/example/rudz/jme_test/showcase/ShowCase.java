@@ -13,14 +13,17 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 import com.jme3.util.SkyFactory;
 
 /**
@@ -61,17 +64,18 @@ public class ShowCase extends SimpleApplication {
     private Node observer;
     private float maxDistance = 75f;
 
-
     private StarDust sd;
+
+    Geometry planet;
 
     public ShowCase() {
         super();
-        this.setShowSettings(false);
+        //this.setShowSettings(false);
     }
 
     private void preInit() {
         cam = getCamera();
-        audio = new Audio();
+        //audio = new Audio();
     }
 
 
@@ -115,6 +119,38 @@ public class ShowCase extends SimpleApplication {
         sd = new StarDust("StarDust", 200, 700f, cam, assetManager);
         sd.addControl(sd);
         rootNode.attachChild(sd);
+
+
+
+        /*
+
+        // planet test
+        // Setup camera
+        cam.setLocation(new Vector3f(0,0,1000));
+        this.getFlyByCamera().setMoveSpeed(200.0f);
+
+        // Add sun
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
+        rootNode.addLight(sun);
+
+        // Add planet
+        planet = new Geometry("Planet");
+
+        PlanetMeshGen planetMeshGen = new PlanetMeshGen();
+        planetMeshGen.generateHeightmap();
+        planet.setMesh(planetMeshGen.generateMesh());
+
+        Material mat = new Material(this.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        mat.setBoolean("UseVertexColor", true);
+        // Uncommet for wireframe
+        //mat.getAdditionalRenderState().setWireframe(true);
+
+        planet.setMaterial(mat);
+
+        rootNode.attachChild(planet);
+        */
+
 
         /*
 
@@ -163,10 +199,17 @@ public class ShowCase extends SimpleApplication {
     public void simpleUpdate(final float tpf) {
         super.simpleUpdate(tpf);
         sd.update(tpf);
+
+        /*
         if (car != null) {
             car.getPlayer().steer(car.getTurn() / 10);
             car.getPlayer().accelerate(-800f);
         }
+        */
+
+
+        //planet.rotate(0, 0.005f*tpf, 0);
+
 
         // startravel test
         /*
@@ -180,6 +223,21 @@ public class ShowCase extends SimpleApplication {
         }
         light.setDirection(cam.getDirection());
         */
+    }
+
+    private Geometry createLensFlare() {
+        Geometry flare = new Geometry("Flare", new Quad(150.0f, 75.0f));
+        flare.move(-140.0f, -32.0f, 75.0f);
+        flare.setQueueBucket(RenderQueue.Bucket.Transparent);
+        flare.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        //Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setTexture("ColorMap", assetManager.loadTexture("Textures/lens_flare.png"));
+        mat.getAdditionalRenderState().setDepthTest(true);
+        mat.getAdditionalRenderState().setDepthWrite(true);
+        mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Additive);
+        flare.setMaterial(mat);
+        return flare;
     }
 
     protected void configureCamera() {

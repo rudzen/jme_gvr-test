@@ -34,13 +34,13 @@ public class Audio {
 
     public void setDefaults(AssetManager assetManager, AudioRenderer audioRenderer) {
 
-        audioRenderer.setEnvironment(environment);
+        //audioRenderer.setEnvironment(environment);
 
         // default AudioNodes
         nodes.put(AMBIENCE, new AudioNode(assetManager, "Sounds/Environment/Nature.ogg", true));
         nodes.put(WAVES, new AudioNode(assetManager, "Sounds/Environment/Ocean Waves.ogg", true));
         nodes.put(ENGINE, new AudioNode(assetManager, "Sounds/Effects/Gun.wav", false));
-        nodes.put(MUSIC, new AudioNode(assetManager, "Sounds/Loops/Space Fighter Loop.ogg", true));
+        nodes.put(MUSIC, new AudioNode(assetManager, "Sounds/space_fighter_loop.mp3", true));
 
         nodes.get(WAVES).setPositional(true);
         nodes.get(WAVES).setLocalTranslation(new Vector3f(0, 0, 0));
@@ -57,10 +57,10 @@ public class Audio {
         nodes.get(ENGINE).setLooping(true);
 
         nodes.get(MUSIC).setPositional(true);
-        nodes.get(MUSIC).setLocalTranslation(new Vector3f(0, 0, 0));
+        nodes.get(MUSIC).setLocalTranslation(new Vector3f(10f, 10f, 10f));
         nodes.get(MUSIC).setMaxDistance(100);
         nodes.get(MUSIC).setRefDistance(5);
-        nodes.get(MUSIC).setVolume(3);
+        nodes.get(MUSIC).setVolume(7);
 
         //engine.setVelocity(new Vector3f(144.0f, 144.0f, 144.0f));
         //engine.play();

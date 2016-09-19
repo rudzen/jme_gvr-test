@@ -44,7 +44,7 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
 
     private static final String TAG = "ShowCaseActivity";
 
-    private static final String SOUND_FILE = "Sounds/Loops/Space Fighter Loop.ogg";
+    private static final String SOUND_FILE = "Sounds/space_fighter_loop.mp3";
     //private static final String SOUND_FILE = "Sounds/cube_sound.wav";
 
     private Vibrator vibrator;
@@ -156,14 +156,15 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
                 // Start spatial audio playback of SOUND_FILE at the model postion. The returned
                 //soundId handle is stored and allows for repositioning the sound object whenever
                 // the cube position changes.
+
                 gvrAudioEngine.preloadSoundFile(SOUND_FILE);
                 soundId = gvrAudioEngine.createSoundObject(SOUND_FILE);
                 gvrAudioEngine.setSoundObjectPosition(soundId, 0.1f, 2.0f, 0.0f);
                 gvrAudioEngine.playSound(soundId, true); // looped playback
             }
-        })
-                .start();
+        }).start();
         checkGLError("onSurfaceCreated");
+
     }
 
     /**
@@ -175,6 +176,7 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
     @Override
     public void onNewFrame(HeadTransform headTransform) {
 
+        Log.d("onNewFrame", "Sound playing : " + Boolean.toString(gvrAudioEngine.isSoundPlaying(soundId)));
 
     /*
     // Build the camera matrix and apply it to the ModelView.
@@ -201,6 +203,10 @@ public class ShowCaseActivity extends AndroidGvrHarness implements GvrView.Stere
             Log.d("HEADVIEW", Float.toString(f));
         }
         */
+
+        //float[] headView = headTransform.getHeadView();
+        //gvrAudioEngine.setHeadRotation(headView[0], headView[1], headView[2], headView[3]);
+
 
         ctx.onNewFrame(headTransform);
     }
