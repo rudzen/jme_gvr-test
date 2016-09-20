@@ -19,19 +19,7 @@
             <option value="$PROJECT_DIR$/libraries/videowidget" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/libraries/audio" />
-            <option value="$PROJECT_DIR$/libraries/base" />
-            <option value="$PROJECT_DIR$/libraries/common" />
-            <option value="$PROJECT_DIR$/libraries/commonwidget" />
-            <option value="$PROJECT_DIR$/libraries/controller" />
-            <option value="$PROJECT_DIR$/libraries/panowidget" />
-            <option value="$PROJECT_DIR$/libraries/videowidget" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

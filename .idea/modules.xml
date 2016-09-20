@@ -8,7 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/libraries/common/common.iml" filepath="$PROJECT_DIR$/libraries/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/commonwidget/commonwidget.iml" filepath="$PROJECT_DIR$/libraries/commonwidget/commonwidget.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/controller/controller.iml" filepath="$PROJECT_DIR$/libraries/controller/controller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jme-test.iml" filepath="$PROJECT_DIR$/jme-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jme_gvr-test.iml" filepath="$PROJECT_DIR$/jme_gvr-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/panowidget/panowidget.iml" filepath="$PROJECT_DIR$/libraries/panowidget/panowidget.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/videowidget/videowidget.iml" filepath="$PROJECT_DIR$/libraries/videowidget/videowidget.iml" />
     </modules>
