@@ -298,8 +298,7 @@ public class AndroidGvrHarness extends GvrActivity implements TouchListener, Dia
         }
 
         final String finalTitle = title;
-        final String finalMsg = (errorMsg != null ? errorMsg : "Uncaught Exception")
-                + "\n" + stackTrace;
+        final String finalMsg = (errorMsg != null ? errorMsg : "Uncaught Exception") + "\n" + stackTrace;
 
         logger.log(Level.SEVERE, finalMsg);
 
@@ -382,7 +381,8 @@ public class AndroidGvrHarness extends GvrActivity implements TouchListener, Dia
             }
 
             app.getInputManager().addMapping(ESCAPE_EVENT, new TouchTrigger(TouchInput.KEYCODE_BACK));
-            app.getInputManager().addListener(this, new String[]{ESCAPE_EVENT});
+            app.getInputManager().addListener(this, ESCAPE_EVENT);
+            //app.getInputManager().addListener(this, new String[]{ESCAPE_EVENT});
         }
     }
 

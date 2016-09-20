@@ -14,6 +14,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -25,6 +26,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.util.SkyFactory;
+
+import java.util.List;
 
 /**
  * @author rudz
@@ -74,7 +77,7 @@ public class ShowCase extends SimpleApplication {
     }
 
     private void preInit() {
-        cam = getCamera();
+        //cam = getCamera();
         //audio = new Audio();
     }
 
@@ -116,74 +119,41 @@ public class ShowCase extends SimpleApplication {
         rootNode.attachChild(skyBox);
         */
 
-        sd = new StarDust("StarDust", 200, 700f, cam, assetManager);
+        sd = new StarDust("StarDust", 200, 700f, getCamera(), assetManager);
         sd.addControl(sd);
-        rootNode.attachChild(sd);
 
 
+        // add startravel to prove a point!
 
-        /*
+        Geometry geom = new Geometry("Box", new Box(1, 1, 1));
 
-        // planet test
-        // Setup camera
-        cam.setLocation(new Vector3f(0,0,1000));
-        this.getFlyByCamera().setMoveSpeed(200.0f);
-
-        // Add sun
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
-        rootNode.addLight(sun);
-
-        // Add planet
-        planet = new Geometry("Planet");
-
-        PlanetMeshGen planetMeshGen = new PlanetMeshGen();
-        planetMeshGen.generateHeightmap();
-        planet.setMesh(planetMeshGen.generateMesh());
-
-        Material mat = new Material(this.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
-        mat.setBoolean("UseVertexColor", true);
-        // Uncommet for wireframe
-        //mat.getAdditionalRenderState().setWireframe(true);
-
-        planet.setMaterial(mat);
-
-        rootNode.attachChild(planet);
-        */
-
-
-        /*
-
-        //Box b = new Box(1, 1, 1);
-        //Geometry geom = new Geometry("Box", b);
         mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         mat.setColor("Diffuse", ColorRGBA.White);
-        //geom.setMaterial(mat);
-        //rootNode.attachChild(geom);
+        mat.setTransparent(false);
+        geom.setMaterial(mat);
+
+        rootNode.attachChild(geom);
 
         observer = new Node("");
         rootNode.attachChild(observer);
 
+        /* TODO: Remove these, but for now I just want something to show
+        getRenderManager().removePostView(guiViewPort);
+        guiNode.detachAllChildren();
+        */
+
         stars = new Node();
-        rootNode.attachChild(stars);
+
+        sd.attachChild(stars);
+
+        rootNode.attachChild(sd);
+
         initStars();
 
         light = new SpotLight();
         light.setSpotOuterAngle(FastMath.QUARTER_PI);
         stars.addLight(light);
 
-        // end JME star travel stuff
-        */
-
-        /*
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
-        rootNode.addLight(dl);
-
-        dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(0.5f, -0.1f, 0.3f).normalizeLocal());
-        rootNode.addLight(dl);
-        */
     }
 
     @Override
@@ -212,7 +182,6 @@ public class ShowCase extends SimpleApplication {
 
 
         // startravel test
-        /*
         List<Spatial> starList = stars.getChildren();
 
         for (Spatial s : starList) {
@@ -221,11 +190,10 @@ public class ShowCase extends SimpleApplication {
                 s.setLocalTranslation(FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * 100 - 50, maxDistance);
             }
         }
-        light.setDirection(cam.getDirection());
-        */
+        light.setDirection(getCamera().getDirection());
     }
 
-    private Geometry createLensFlare() {
+    private Node createLensFlare(Node baseNode) {
         Geometry flare = new Geometry("Flare", new Quad(150.0f, 75.0f));
         flare.move(-140.0f, -32.0f, 75.0f);
         flare.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -237,7 +205,8 @@ public class ShowCase extends SimpleApplication {
         mat.getAdditionalRenderState().setDepthWrite(true);
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Additive);
         flare.setMaterial(mat);
-        return flare;
+        baseNode.attachChild(flare);
+        return baseNode;
     }
 
     protected void configureCamera() {

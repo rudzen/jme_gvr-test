@@ -23,7 +23,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile files('libs/j-ogg-all-1.0.0.jar')
     compile files('libs/jme3-android-3.1.0-3.1-beta1-b002-SNAPSHOT-SNAPSHOT.jar')
     compile files('libs/jme3-android-native-3.1.0-3.1-beta1-b002-SNAPSHOT-SNAPSHOT.jar')
     compile files('libs/jme3-core-3.1.0-3.1-beta1-b002-SNAPSHOT-SNAPSHOT.jar')
