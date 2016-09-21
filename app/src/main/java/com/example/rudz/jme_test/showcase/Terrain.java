@@ -24,7 +24,7 @@ public class Terrain {
     private static final float brickScale = 128.0f;
     private static final float roadScale = 200.0f;
 
-    public static void createTerrain(AssetManager assetManager, Node rootNode, Camera camera, BulletAppState bulletAppState) {
+    public static void createTerrain(AssetManager assetManager, Node attachTo, Camera camera, BulletAppState bulletAppState) {
         // TERRAIN TEXTURE material
         Material matTerrain = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
         matTerrain.setBoolean("useTriPlanarMapping", false);
@@ -139,7 +139,7 @@ public class Terrain {
         terrain.setLocalScale(2f, 1f, 2f);
         terrain.addControl(new RigidBodyControl(0f));
         bulletAppState.getPhysicsSpace().add(terrain);
-        rootNode.attachChild(terrain);
+        attachTo.attachChild(terrain);
 
         //Material debugMat = assetManager.loadMaterial("Common/Materials/VertexColor.j3m");
         //terrain.generateDebugTangents(debugMat);

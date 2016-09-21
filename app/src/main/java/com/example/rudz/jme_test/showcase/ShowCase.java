@@ -7,6 +7,7 @@ import com.example.rudz.jme_test.stardust.StarDust;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -18,7 +19,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -39,6 +39,10 @@ public class ShowCase extends SimpleApplication {
     // constants for some stuff.
     private static final String ICON = "assets/Interface/icon.png";
     private static final String SPLASH = "assets/Interface/Splash-small.png";
+
+    private static final String LIGHTNING = "Common/MatDefs/Light/Lighting.j3md";
+
+
     private ActionListener movementActionListener;
 
     private BulletAppState bulletAppState;
@@ -53,9 +57,7 @@ public class ShowCase extends SimpleApplication {
     private float steeringValue = 0f;
     private float accelerationValue = 0f;
 
-    private Camera cam;
     private ChaseCamera chaseCam;
-    private Spatial skyBox;
 
     private Audio audio;
 
@@ -69,7 +71,9 @@ public class ShowCase extends SimpleApplication {
 
     private StarDust sd;
 
-    Geometry planet;
+    private BitmapText points_base;
+    private BitmapText points;
+    private long score;
 
     public ShowCase() {
         super();
@@ -86,18 +90,14 @@ public class ShowCase extends SimpleApplication {
     public void simpleInitApp() {
         preInit();
 
-        //bulletAppState = new BulletAppState();
-        //stateManager.attach(bulletAppState);
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
 
         // CAR
 
         //buildPlayer();
         //movementActionListener = new MovementListener();
         //setupKeys(movementActionListener);
-
-        // Terrain
-        //Terrain.createTerrain(assetManager, rootNode, cam, bulletAppState);
-
 
         //configureCamera();
 
@@ -106,30 +106,23 @@ public class ShowCase extends SimpleApplication {
         audio.nodes.get(audio.MUSIC).play();
         */
 
-        // JME start travel stuff
-
-        /*
-        // Load the skybox spatial
-        skyBox = loadSky();
-
-        // rotate the damn thing, no idea why its on it's head :(
-        skyBox.rotate(FastMath.PI, 0f, 0.0f);
-
-        // attack the bastard..
-        rootNode.attachChild(skyBox);
-        */
-
         sd = new StarDust("StarDust", 200, 700f, getCamera(), assetManager);
         sd.addControl(sd);
 
 
         // add startravel to prove a point!
 
-        Geometry geom = new Geometry("Box", new Box(1, 1, 1));
+        cam = getCamera();
 
-        mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setColor("Diffuse", ColorRGBA.White);
-        mat.setTransparent(false);
+        sd = new StarDust("StarDust", 200, 700f, cam, assetManager);
+        sd.addControl(sd);
+
+        // add startravel to prove a point!
+        Box b = new Box(1, 1, 1);
+        Geometry geom = new Geometry("Box", b);
+
+        mat = new Material(assetManager, LIGHTNING);
+        mat.setColor("Diffuse", ColorRGBA.Magenta);
         geom.setMaterial(mat);
 
         rootNode.attachChild(geom);
@@ -140,29 +133,28 @@ public class ShowCase extends SimpleApplication {
         /* TODO: Remove these, but for now I just want something to show
         getRenderManager().removePostView(guiViewPort);
         guiNode.detachAllChildren();
-        */
+         */
 
         stars = new Node();
-
         sd.attachChild(stars);
 
         rootNode.attachChild(sd);
 
-        initStars();
+        initStars(b);
 
         light = new SpotLight();
         light.setSpotOuterAngle(FastMath.QUARTER_PI);
         stars.addLight(light);
+
+        initGUI();
+        score = 0;
 
     }
 
     @Override
     public void update() {
         super.update();
-        /*
-        car.getPlayer().steer(car.getTurn() / 10);
-        car.getPlayer().accelerate(-800f);
-        */
+
     }
 
     @Override
@@ -170,43 +162,55 @@ public class ShowCase extends SimpleApplication {
         super.simpleUpdate(tpf);
         sd.update(tpf);
 
-        /*
-        if (car != null) {
-            car.getPlayer().steer(car.getTurn() / 10);
-            car.getPlayer().accelerate(-800f);
-        }
-        */
-
-
-        //planet.rotate(0, 0.005f*tpf, 0);
-
-
-        // startravel test
+        // update cubes
         List<Spatial> starList = stars.getChildren();
-
         for (Spatial s : starList) {
-            s.move(0, 0, -.4f);
+            s.move(-cam.getDirection().x, -cam.getDirection().y, -.4f);
             if (s.getWorldTranslation().z < -maxDistance) {
                 s.setLocalTranslation(FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * 100 - 50, maxDistance);
+                if (s.getLocalTranslation().x < 3f && s.getLocalTranslation().x > -3f && s.getLocalTranslation().y < 3f && s.getLocalTranslation().y > -3f) {
+                    points.setText(Long.toString(++score));
+                }
             }
         }
         light.setDirection(getCamera().getDirection());
     }
 
-    private Node createLensFlare(Node baseNode) {
+    private void initGUI() {
+        points_base = initText("Points: ");
+        points = initText("0");
+        final Vector3f pos = new Vector3f(guiViewPort.getCamera().getWidth() / 2 - (points_base.getLineWidth() / 2), guiViewPort.getCamera().getHeight() - (points_base.getHeight() * 8), 0);
+        points_base.setLocalTranslation(pos);
+        points.setLocalTranslation(pos.addLocal(points_base.getLineWidth(), 0, 0));
+        guiNode.attachChild(points_base);
+        guiNode.attachChild(points);
+    }
+
+    private BitmapText initText(final String text) {
+        /** Write text on the screen (HUD) */
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText helloText = new BitmapText(guiFont, false);
+        helloText.setSize(guiFont.getCharSet().getRenderedSize());
+        helloText.setText(text);
+        return helloText;
+    }
+
+
+    private Geometry createLensFlare(Node baseNode) {
         Geometry flare = new Geometry("Flare", new Quad(150.0f, 75.0f));
         flare.move(-140.0f, -32.0f, 75.0f);
         flare.setQueueBucket(RenderQueue.Bucket.Transparent);
         flare.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-        //Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setTexture("ColorMap", assetManager.loadTexture("Textures/lens_flare.png"));
         mat.getAdditionalRenderState().setDepthTest(true);
         mat.getAdditionalRenderState().setDepthWrite(true);
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Additive);
         flare.setMaterial(mat);
-        baseNode.attachChild(flare);
-        return baseNode;
+        //baseNode.attachChild(flare);
+        return flare;
     }
 
     protected void configureCamera() {
@@ -324,11 +328,10 @@ public class ShowCase extends SimpleApplication {
         }
     }
 
-    private void initStars() {
+    private void initStars(final Box baseBox) {
         Geometry star;
-        Box starBox = new Box(1, 1, 1);
-        for (int i = 0; i < 100; i++) {
-            star = new Geometry("Star" + Integer.toString(i), starBox.clone());
+        for (int i = 0; i < 300; i++) {
+            star = new Geometry("Star" + Integer.toString(i), baseBox.clone());
             star.setMaterial(mat);
             star.rotate(FastMath.nextRandomFloat() * FastMath.TWO_PI, FastMath.nextRandomFloat() * FastMath.TWO_PI, FastMath.nextRandomFloat() * FastMath.TWO_PI);
             star.setLocalTranslation(FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * 100 - 50, FastMath.nextRandomFloat() * maxDistance * 2 - maxDistance);
